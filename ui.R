@@ -12,6 +12,8 @@ shinyUI(
              br(),
              br(),
              #img(src = "airbnb_overview.jpg", height = 600, weight =700, align="center")
+             #use Shiny’s HTML tag functions to center the image
+             #https://stackoverflow.com/questions/34663099/how-to-center-an-image-in-a-shiny-app
              HTML('<center><img src="airbnb_overview.jpg", height = 600, weight =700 ></center>')
              ),
 
@@ -21,27 +23,25 @@ shinyUI(
           tags$head(includeCSS("styles.css"),#customized CSS
                     includeScript("gomap.js")),
           
-      leafletOutput(outputId = "map",width="100%", height="100%"),
+      leafletOutput(outputId = "map", width = "100%", height = "100%"),
                           
-      # Options: borough, Room Type, Price, Rating, Reviews
+      # Panel options: borough, Room Type, Price, Rating, Reviews
       absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE, draggable = TRUE, 
                     top = 80, left = "auto", right = 20, bottom = "auto",
                     width = 320, height = "auto",
-                                        
       h2("Airbnb in NYC"),
-      
       checkboxGroupInput(inputId = "select_boro", label = h4("Borough"), 
                          choices = boro, selected = 'Manhattan'),
       checkboxGroupInput(inputId = "select_room", label = h4("Room Type"), 
                          choices = room, selected = room),
-      sliderInput(inputId = "slider_price", label = h4("Price"), min = 1, max = 300,
-                  pre = "$", sep = ",", value = c(30, 300)), #animate=TRUE
-      sliderInput(inputId = "slider_rating", label = h4("Rating Score"), min = 20, max = 100, 
+      sliderInput(inputId = "slider_price", label = h4("Price"), min = 1, max = 300, step = 20,
+                  pre = "$", sep = ",", value = c(30, 300)),
+      sliderInput(inputId = "slider_rating", label = h4("Rating Score"), min = 20, max = 100, step = 10,
                   value = c(60, 100)),
-      sliderInput(inputId = "slider_review", label = h4("Number of Reviews"), min = 10, max = 450, 
+      sliderInput(inputId = "slider_review", label = h4("Number of Reviews"), min = 10, max = 450, step = 50,
                   value = c(10, 450)),
       h6("The map information is based on May 02, 2017 dataset from"),
-      h6(a("Inside Airbnb",href="http://insideairbnb.com/get-the-data.html", target="_blank"))
+      h6(a("Inside Airbnb", href = "http://insideairbnb.com/get-the-data.html", target="_blank"))
       ),
       
       # Results: count_room, avgprice
@@ -71,14 +71,14 @@ shinyUI(
                
                column(9,
                       h3(""),
-                      plotlyOutput(outputId = "graph1",width=1000, height =350),
+                      plotlyOutput(outputId = "graph1", width=1000, height =350),
                       br(),
-                      plotlyOutput(outputId = "tab_price",width=1000, height =350)
+                      plotlyOutput(outputId = "tab_price", width=1000, height =350)
                )
                       
-               )#fuildrow
+               )
              
-             ),#tabpanel2
+             ),
 
 #### References ##########      
     navbarMenu("References",
@@ -87,9 +87,8 @@ shinyUI(
 
                tabPanel("Airbnb Business Model",
                         h3("Airbnb Business Model", a("Link", href="http://bmtoolbox.net/stories/airbnb/")))
-               ) #https://stackoverflow.com/questions/17847764/put-a-html-link-to-the-r-shiny-application
-    #pdf https://gist.github.com/aagarw30/d5aa49864674aaf74951
-    #web https://stackoverflow.com/questions/33020558/embed-iframe-inside-shiny-app
-
-
+               ) 
+    #imbed html https://stackoverflow.com/questions/17847764/put-a-html-link-to-the-r-shiny-application
+    #imbed pdf  https://gist.github.com/aagarw30/d5aa49864674aaf74951
+    #imbed web  https://stackoverflow.com/questions/33020558/embed-iframe-inside-shiny-app
 ))

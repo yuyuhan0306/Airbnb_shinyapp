@@ -1,9 +1,6 @@
-webss <- data.frame(name=c("Web1", "Web2"), w=c('Inside Airbnb','Airbnb Business Model'))
-
 shinyServer(function(input, output, session) {
 
   ## Overview ###########################
-  #
   ## NYC Interactive Map ##############################
   # reactivate map info
   mapdf <- reactive({
@@ -22,50 +19,48 @@ shinyServer(function(input, output, session) {
   output$map <- renderLeaflet({
     leaflet() %>% 
       addProviderTiles("Esri.WorldStreetMap") %>%
-      #addTiles(urlTemplate = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
-               #attribution = 'Maps by <a href="http://www.mapbox.com/">Mapbox</a>') %>% 
-      addLegend(position = "bottomleft", pal = groupColors, values = room, opacity = 1,title = "Room Type") %>% 
+      addLegend(position = "bottomleft", pal = groupColors, values = room, opacity = 1, title = "Room Type") %>% 
       setView(lng = -73.9772, lat = 40.7527, zoom = 12)
   })
   
-  observe({
-    proxy <- leafletProxy("map",data = mapdf()) %>% #dont forget ()
+  observe({ #require a trigger to call the observe function
+    proxy <- leafletProxy("map",data = mapdf()) %>% #don't forget ()
       clearMarkerClusters() %>% 
       clearMarkers() %>%
-      addCircleMarkers(~longitude,~latitude,radius=2,color = ~groupColors(room_type),
+      addCircleMarkers(lng = ~longitude, lat = ~latitude, radius = 2, color = ~groupColors(room_type),
                  group = "CIRCLE",
                  popup = ~paste('<b><font color="Black">','Listing Information','</font></b><br/>',
                                 'Room Type:', room_type,'<br/>',
                                 'Price:', price,'<br/>',
                                 'Rating Score:', review_scores_rating, '<br/>',
-                                'Number of Reviews:',number_of_reviews,'<br/>')
-                 # popup = ~paste("Room Type:", room_type,
-                 #                "Price:", price,
-                 #                "Rating Score:", review_scores_rating,
-                 #                "Number of Reviews:",number_of_reviews,
-                 #                 sep = "<br/>")
-                 ) %>% 
-      addCircleMarkers(~longitude,~latitude,clusterOptions = markerClusterOptions(), group = "CLUSTER" ) %>% 
+                                'Number of Reviews:', number_of_reviews,'<br/>')) %>% 
+      addCircleMarkers(lng = ~longitude, lat = ~latitude, clusterOptions = markerClusterOptions(),
+                       group = "CLUSTER",
+                       popup = ~paste('<b><font color="Black">','Listing Information','</font></b><br/>',
+                                      'Room Type: ', room_type, '<br/>',
+                                      'Price:', price,'<br/>',
+                                      'Rating Score:', review_scores_rating, '<br/>',
+                                      'Number of Reviews:', number_of_reviews,'<br/>')) %>% 
       addLayersControl(
-       baseGroups = c("CIRCLE","CLUSTER"),
-       options = layersControlOptions(collapsed = FALSE)
+        baseGroups = c("CIRCLE","CLUSTER"),
+        options = layersControlOptions(collapsed = FALSE)
      ) 
     })
   
-  ## reactivate count info
+  ## reactivate count dataframe for map graph1 
   countdf <- reactive({
     mapdf() %>%
       group_by(., room_type) %>%
-      summarise(., count_type=n())
+      summarise(., count_type = n())
   })
   
-  #map graph1
+  #map graph1 
   output$count_room <- renderPlotly({
-    plot_ly(data = countdf(), x= ~room_type, y=~count_type, type="bar", color=~room_type,
+    plot_ly(data = countdf(), x = ~room_type, y = ~count_type, type = "bar", color = ~room_type,
             colors = c('#E03A3C','#009DDC','#62BB47'),
             hoverinfo = 'text',
             text = ~count_type) %>%
-      layout(xaxis = list(title="", showticklabels = FALSE),
+      layout(xaxis = list(title = "", showticklabels = FALSE),
              yaxis = list(title = "count"), showlegend = FALSE,
              annotations = list(x = ~room_type, y = ~count_type, text = ~paste(round(count_type/sum(count_type),2)*100,'%'),
                                 xanchor = 'center', yanchor = 'bottom',
@@ -73,21 +68,21 @@ shinyServer(function(input, output, session) {
       config(displayModeBar = FALSE)
   })
   
-  # reactivate price info
+  ## reactivate price dataframe for map graph2
   pricedf <- reactive({
     mapdf() %>% 
       group_by(., room_type) %>% 
-      summarise(.,avg_price=round(mean(price),2))
+      summarise(., avg_price = round(mean(price),2))
   })
   
   #map graph2 avgprice
   output$avgprice <- renderPlotly({
-    plot_ly(data = pricedf(),x=~room_type,y=~avg_price, type="bar", color=~room_type,
+    plot_ly(data = pricedf(), x = ~room_type, y = ~avg_price, type = "bar", color = ~room_type,
                   colors = c('#E03A3C','#009DDC','#62BB47'),
                   hoverinfo = 'text',
                   text = ~avg_price) %>% 
-      layout(xaxis = list(title="", showticklabels = FALSE), 
-             yaxis = list(title = "price"),showlegend = FALSE,
+      layout(xaxis = list(title = "", showticklabels = FALSE), 
+             yaxis = list(title = "price"), showlegend = FALSE,
              annotations = list(x = ~room_type, y = ~avg_price, text = ~paste('$',avg_price),
                                 xanchor = 'center', yanchor = 'bottom', 
                                 showarrow = FALSE)) %>% 
@@ -109,8 +104,8 @@ shinyServer(function(input, output, session) {
   
   output$graph1 <- renderPlotly({
     t <- list(size = 9)
-    plot_ly(data = graph1df(), x=~n, y=~room_type, type="bar", color=~boro,
-            colors=c('#800080','#009DDC','#E03A3C','#62BB47','#FFA500'),
+    plot_ly(data = graph1df(), x = ~n, y = ~room_type, type = "bar", color = ~boro,
+            colors = c('#800080','#009DDC','#E03A3C','#62BB47','#FFA500'),
             orientation = 'h', showlegend = TRUE) %>%
       layout(xaxis = list(title = "count"),
              yaxis = list(title = ""), 
@@ -119,37 +114,17 @@ shinyServer(function(input, output, session) {
   
   
   output$tab_price <- renderPlotly({
-    if(input$price_option=='Year'){
-      m <- list(size=8)
-      plot_ly(data = overall, x=~year, y=~avg_pricemo, type = 'scatter', mode='markers', linetype = I('solid')) %>% 
+    if(input$price_option == 'Year'){
+      m <- list(size = 8)
+      plot_ly(data = overall, x = ~year, y = ~avg_pricemo, type = 'scatter', mode ='markers', linetype = I('solid')) %>% 
         layout(xaxis = list(title = "", showticklabels = TRUE),
-               yaxis = list(title = "price"),showlegend = FALSE, font=m)} else{
+               yaxis = list(title = "price"), showlegend = FALSE, font=m)} else{
                  
-      plot_ly(data = timedf, x=~month, y=~avg_pricemo, type='scatter', mode='markers',
-              color=~year, colors = c('#009DDC','#E03A3C','#62BB47','#FFA500')) %>%
-        add_trace(y=~avgyrmo_price, type='scatter', mode='markers+lines', name='average',evaluate = TRUE) %>% 
+      plot_ly(data = timedf, x = ~month, y = ~avg_pricemo, type = 'scatter', mode = 'markers',
+              color = ~year, colors = c('#009DDC','#E03A3C','#62BB47','#FFA500')) %>%
+        add_trace(y = ~avgyrmo_price, type = 'scatter', mode = 'markers+lines', name = 'average', evaluate = TRUE) %>% 
         layout(xaxis = list(title = "month", showticklabels = TRUE),
-               yaxis = list(title = "price"),showlegend = TRUE)}
+               yaxis = list(title = "price"), showlegend = TRUE)}
  })
 
-  ## References ###########
-  
-  # loadframe <- reactive({
-  #   if(input$web == "Inside Airbnb"){
-  #     a(href="http://insideairbnb.com/get-the-data.html")
-  #   }
-  #   if(input$web == "Airbnb Business Model"){
-  #     a(href="http://bmtoolbox.net/stories/airbnb/")
-  #   }
-  # })
-  # 
-  # output$frame <- renderUI({
-  #   input$web
-  #   indi <- tags$iframe(src=loadframe(), height=700, width=900)
-  #   print(indi)
-  #   # indi
-  # })
-  
-
-
-})#function
+})
