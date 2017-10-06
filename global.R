@@ -10,8 +10,7 @@ load("tab2df.Rda")
 load("timedf.Rda")
 load("overall.Rda")
 
-
-# variables
+# global variables
 boro <- c("Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island")
 
 room <- c("Entire home/apt", "Private room", "Shared room")
@@ -21,4 +20,3 @@ groupColors <- colorFactor(c("#E03A3C", "#009DDC","#62BB47"),
 
 # (Palette) http://www.codeofcolors.com/apple-colors.html
 # (Example) https://shiny.rstudio.com/gallery/superzip-example.html
-
