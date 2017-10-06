@@ -1,8 +1,7 @@
 shinyServer(function(input, output, session) {
 
-  ## Overview ###########################
-  ## NYC Interactive Map ##############################
-  # reactivate map info
+  ##### NYC Interactive Map ##############################
+  ## reactivate map info
   mapdf <- reactive({
     nycmap %>%
         filter(boro %in% input$select_boro & 
@@ -24,7 +23,7 @@ shinyServer(function(input, output, session) {
   })
   
   observe({ #require a trigger to call the observe function
-    proxy <- leafletProxy("map",data = mapdf()) %>% #don't forget ()
+    proxy <- leafletProxy("map", data = mapdf()) %>% #don't forget ()
       clearMarkerClusters() %>% 
       clearMarkers() %>%
       addCircleMarkers(lng = ~longitude, lat = ~latitude, radius = 2, color = ~groupColors(room_type),
@@ -90,7 +89,8 @@ shinyServer(function(input, output, session) {
   })
   
   
-  ## Listings, Boroughs and Price Changes #######################
+  ##### Listings, Boroughs and Price Changes #######################
+  ## reactivate dataframe for listings grapgh
   graph1df <- reactive({
     nycmap %>%
       select(boro,room_type,price,review_scores_rating) %>% 
@@ -102,6 +102,7 @@ shinyServer(function(input, output, session) {
       summarise(n=n())
   })
   
+  # listings grapgh
   output$graph1 <- renderPlotly({
     t <- list(size = 9)
     plot_ly(data = graph1df(), x = ~n, y = ~room_type, type = "bar", color = ~boro,
@@ -112,7 +113,7 @@ shinyServer(function(input, output, session) {
              barmode = 'dodge', font = t)
   })
   
-  
+  # price change graph
   output$tab_price <- renderPlotly({
     if(input$price_option == 'Year'){
       m <- list(size = 8)
