@@ -2,11 +2,10 @@ library(shinythemes)
 
 shinyUI(
   navbarPage(title = "Airbnb Visualization", 
-             id ="nav",
-             
+             id ="nav",           
              theme = shinytheme("united"), #https://rstudio.github.io/shinythemes/
              
-#### Overview ##########        
+##### Overview ##########        
     tabPanel("Overview",
              br(),
              br(),
@@ -17,7 +16,7 @@ shinyUI(
              HTML('<center><img src="airbnb_overview.jpg", height = 600, weight =700 ></center>')
              ),
 
-#### Map ##########      
+##### Map ##########      
     tabPanel("NYC map",
       div(class="outer",
           tags$head(includeCSS("styles.css"),#customized CSS
@@ -53,7 +52,7 @@ shinyUI(
       
       )),
 
-#### Listings ##########               
+##### Listings ##########               
     tabPanel("Listings, Boroughs and Price Changes",    
              fluidRow(
                column(3,
@@ -80,7 +79,7 @@ shinyUI(
              
              ),
 
-#### References ##########      
+##### References ##########      
     navbarMenu("References",
                tabPanel("Inside Airbnb",
                         h3("Inside Airbnb", a("Link", href="http://insideairbnb.com/get-the-data.html"))),
@@ -88,7 +87,7 @@ shinyUI(
                tabPanel("Airbnb Business Model",
                         h3("Airbnb Business Model", a("Link", href="http://bmtoolbox.net/stories/airbnb/")))
                ) 
-    #imbed html https://stackoverflow.com/questions/17847764/put-a-html-link-to-the-r-shiny-application
-    #imbed pdf  https://gist.github.com/aagarw30/d5aa49864674aaf74951
-    #imbed web  https://stackoverflow.com/questions/33020558/embed-iframe-inside-shiny-app
+    #embed html https://stackoverflow.com/questions/17847764/put-a-html-link-to-the-r-shiny-application
+    #embed pdf  https://gist.github.com/aagarw30/d5aa49864674aaf74951
+    #embed web  https://stackoverflow.com/questions/33020558/embed-iframe-inside-shiny-app
 ))
