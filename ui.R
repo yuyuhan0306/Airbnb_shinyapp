@@ -19,8 +19,8 @@ shinyUI(
 ##### Map ##########      
     tabPanel("NYC map",
       div(class="outer",
-          tags$head(includeCSS("styles.css"),#customized CSS
-                    includeScript("gomap.js")),
+          tags$head(#customized CSS
+                    includeCSS("styles.css")),
           
       leafletOutput(outputId = "map", width = "100%", height = "100%"),
                           
