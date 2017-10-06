@@ -6,11 +6,12 @@ library(plotly)
 
 # load data
 load("nycmap.Rda")
-load("tab2df.Rda")
 load("timedf.Rda")
 load("overall.Rda")
+load("monthdf.Rda")
 
-# global variables
+
+# variables
 boro <- c("Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island")
 
 room <- c("Entire home/apt", "Private room", "Shared room")
@@ -19,4 +20,5 @@ groupColors <- colorFactor(c("#E03A3C", "#009DDC","#62BB47"),
                            domain = c("Entire home/apt", "Private room","Shared room"))
 
 # (Palette) http://www.codeofcolors.com/apple-colors.html
-# (Example) https://shiny.rstudio.com/gallery/superzip-example.html
+# (Shiny) https://shiny.rstudio.com/gallery/superzip-example.html
+

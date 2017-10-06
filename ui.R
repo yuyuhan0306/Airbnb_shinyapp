@@ -2,7 +2,8 @@ library(shinythemes)
 
 shinyUI(
   navbarPage(title = "Airbnb Visualization", 
-             id ="nav",           
+             id ="nav",
+             
              theme = shinytheme("united"), #https://rstudio.github.io/shinythemes/
              
 ##### Overview ##########        
@@ -20,7 +21,7 @@ shinyUI(
     tabPanel("NYC map",
       div(class="outer",
           tags$head(#customized CSS
-                    includeCSS("styles.css")),
+            includeCSS("styles.css")),
           
       leafletOutput(outputId = "map", width = "100%", height = "100%"),
                           
@@ -87,7 +88,7 @@ shinyUI(
                tabPanel("Airbnb Business Model",
                         h3("Airbnb Business Model", a("Link", href="http://bmtoolbox.net/stories/airbnb/")))
                ) 
-    #embed html https://stackoverflow.com/questions/17847764/put-a-html-link-to-the-r-shiny-application
-    #embed pdf  https://gist.github.com/aagarw30/d5aa49864674aaf74951
-    #embed web  https://stackoverflow.com/questions/33020558/embed-iframe-inside-shiny-app
+    #imbed html https://stackoverflow.com/questions/17847764/put-a-html-link-to-the-r-shiny-application
+    #imbed pdf  https://gist.github.com/aagarw30/d5aa49864674aaf74951
+    #imbed web  https://stackoverflow.com/questions/33020558/embed-iframe-inside-shiny-app
 ))

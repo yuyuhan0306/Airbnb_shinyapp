@@ -1,7 +1,7 @@
 shinyServer(function(input, output, session) {
 
   ##### NYC Interactive Map ##############################
-  ## reactivate map info
+  # reactivate map info
   mapdf <- reactive({
     nycmap %>%
         filter(boro %in% input$select_boro & 
@@ -22,10 +22,12 @@ shinyServer(function(input, output, session) {
       setView(lng = -73.9772, lat = 40.7527, zoom = 12)
   })
   
+  # observe an event
   observe({ #require a trigger to call the observe function
-    proxy <- leafletProxy("map", data = mapdf()) %>% #don't forget ()
+    proxy <- leafletProxy("map",data = mapdf()) %>% #don't forget ()
       clearMarkerClusters() %>% 
       clearMarkers() %>%
+      # circle
       addCircleMarkers(lng = ~longitude, lat = ~latitude, radius = 2, color = ~groupColors(room_type),
                  group = "CIRCLE",
                  popup = ~paste('<b><font color="Black">','Listing Information','</font></b><br/>',
@@ -33,6 +35,7 @@ shinyServer(function(input, output, session) {
                                 'Price:', price,'<br/>',
                                 'Rating Score:', review_scores_rating, '<br/>',
                                 'Number of Reviews:', number_of_reviews,'<br/>')) %>% 
+      # cluster
       addCircleMarkers(lng = ~longitude, lat = ~latitude, clusterOptions = markerClusterOptions(),
                        group = "CLUSTER",
                        popup = ~paste('<b><font color="Black">','Listing Information','</font></b><br/>',
@@ -40,6 +43,7 @@ shinyServer(function(input, output, session) {
                                       'Price:', price,'<br/>',
                                       'Rating Score:', review_scores_rating, '<br/>',
                                       'Number of Reviews:', number_of_reviews,'<br/>')) %>% 
+      # circle/ cluster panel
       addLayersControl(
         baseGroups = c("CIRCLE","CLUSTER"),
         options = layersControlOptions(collapsed = FALSE)
@@ -113,19 +117,18 @@ shinyServer(function(input, output, session) {
              barmode = 'dodge', font = t)
   })
   
-  # price change graph
+  # price change graph (year/ month)
   output$tab_price <- renderPlotly({
     if(input$price_option == 'Year'){
       m <- list(size = 8)
       plot_ly(data = overall, x = ~year, y = ~avg_pricemo, type = 'scatter', mode ='markers', linetype = I('solid')) %>% 
         layout(xaxis = list(title = "", showticklabels = TRUE),
                yaxis = list(title = "price"), showlegend = FALSE, font=m)} else{
-                 
-      plot_ly(data = timedf, x = ~month, y = ~avg_pricemo, type = 'scatter', mode = 'markers',
-              color = ~year, colors = c('#009DDC','#E03A3C','#62BB47','#FFA500')) %>%
-        add_trace(y = ~avgyrmo_price, type = 'scatter', mode = 'markers+lines', name = 'average', evaluate = TRUE) %>% 
-        layout(xaxis = list(title = "month", showticklabels = TRUE),
-               yaxis = list(title = "price"), showlegend = TRUE)}
+      
+      plot_ly(data = monthdf, x = ~month, y = ~month_avg, type= 'scatter', mode = 'markers+lines', color = "Set1",
+              text = ~paste('Price: $', month_avg)) %>%
+                   layout(xaxis = list(title = "month", type = 'category'),
+                          yaxis = list(title = "price"))}
  })
 
 })
