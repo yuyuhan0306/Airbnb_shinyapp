@@ -1,5 +1,5 @@
 # Airbnb_shinyapp
-I created a shiny app, including an interactive map and several graphs about the listings, boroughs and hosts in New York City based on the May 2017 datasets on "Inside Airbnb". After visualizing the distribution of listings and conducting simple statistical analsysis, I found some interesting facts.
+I created a shiny app, including an interactive map and several graphs about the listings, boroughs and hosts in New York City based on the May 2017 datasets on "Inside Airbnb". After visualizing the distribution of listings and conducting simple statistical analysis, I found some interesting facts.
 
 (1) More than 80% of Airbnb properties in New York City are outside the mid-Manhattan area especially in East Village and Nolita.
 
